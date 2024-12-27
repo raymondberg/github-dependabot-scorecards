@@ -1,0 +1,14 @@
+#!/bin/bash
+
+mkdir reports
+
+for repo in `cat repos.txt`; do
+  # Split the org from the repo name
+  org=$(echo $repo | cut -d '/' -f 1)
+  repo=$(echo $repo | cut -d '/' -f 2)
+  echo "Downloading $org/$repo"
+  gh api \
+  -H "Accept: application/vnd.github+json" \
+  -H "X-GitHub-Api-Version: 2022-11-28" \
+  /repos/$org/$repo/dependabot/alerts > reports/$repo.json
+done

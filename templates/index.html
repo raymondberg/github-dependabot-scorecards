@@ -1,0 +1,60 @@
+<div class="container">
+  <h1>GitHub Dependabot Report</h1>
+  <table id="reportTable" class="table table-striped" style="width:100%">
+    <thead>
+      <tr>
+        <th>Filename</th>
+        <th>Total Score</th>
+        <th>Max Score</th>
+        <th>Median Score</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for report in reports %}
+      <tr>
+        <td class="main-row" data-id="{{ loop.index }}" style="font-weight: bold; cursor: pointer">{{ report.filename }}</td>
+        <td>{{ report.total_score }}</td>
+        <td>{{ report.max_score }}</td>
+        <td>{{ report.median_score }}</td>
+      </tr>
+      <tr id="subtable-{{ loop.index }}" class="sub-table" style="display: none;">
+        <td colspan="4">
+          <table class="table table-bordered" style="width: 100%">
+            <thead>
+              <tr>
+                <th>Severity</th>
+                <th>CVSS Score</th>
+                <th>Summary</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for finding in report.findings %}
+              <tr>
+                <td>{{ finding.security_advisory.severity }}</td>
+                <td>{{ finding.security_advisory.cvss.score }}</td>
+                <td><a href="{{ finding.html_url }}" target="_blank">#{{ finding.number }}</a>
+                    {{ finding.security_advisory.summary }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const rows = document.querySelectorAll('.main-row');
+
+    rows.forEach(row => {
+      row.addEventListener('click', function () {
+        const subtableId = 'subtable-' + row.dataset.id;
+        const subtable = document.getElementById(subtableId);
+        subtable.style.display = subtable.style.display === 'none' ? 'table-row' : 'none';
+      });
+    });
+  });
+</script>
